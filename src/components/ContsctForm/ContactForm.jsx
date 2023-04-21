@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 import css from './contactForm.module.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts, addContact } from 'redux/contactsApi';
 import { nanoid } from 'nanoid';
 const ContactForm = () => {
   const dispatch = useDispatch();
-
+  const contacts = useSelector(state => state.contacts.items);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
@@ -24,6 +24,12 @@ const ContactForm = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (contacts.some(contact => contact.name.toLowerCase() === name.toLowerCase()))
+     { alert(`${name} is already in contacts`);
+     setName('');
+     setPhone('');
+    return;
+  }
     dispatch(addContact({name, phone, id:nanoid()}))
     setName('');
     setPhone('');
